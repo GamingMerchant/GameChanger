@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌾 Farmology - Pi Network Farming Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Game Container -->
+    <div id="gameContainer">
+        <!-- Header UI -->
+        <div id="gameHeader">
+            <div class="header-left">
+                <h1>🌾 Farmology</h1>
+                <div class="stats">
+                    <span id="money">💰 $500</span>
+                    <span id="level">⭐ Level 1</span>
+                    <span id="day">📅 Day 1</span>
+                    <span id="time">🕐 06:00</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="pi-network">
+                    <button id="piLoginBtn" class="pi-btn">🥧 Login with Pi</button>
+                    <span id="piUser" class="pi-user hidden">Welcome, Pioneer!</span>
+                </div>
+                <div class="controls">
+                    <button id="pauseBtn">⏸️ Pause</button>
+                    <button id="shopBtn">🏪 Shop</button>
+                    <button id="inventoryBtn">🎒 Inventory</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas" width="1200" height="600"></canvas>
+
+        <!-- Tool Bar -->
+        <div id="toolBar">
+            <div class="tool-section">
+                <h3>🛠️ Tools</h3>
+                <div class="tools">
+                    <button class="tool active" data-tool="hoe">🔨 Hoe</button>
+                    <button class="tool" data-tool="water">💧 Water</button>
+                    <button class="tool" data-tool="seeds">🌱 Seeds</button>
+                    <button class="tool" data-tool="axe">🪓 Axe</button>
+                    <button class="tool" data-tool="pickaxe">⛏️ Pickaxe</button>
+                </div>
+            </div>
+            <div class="current-tool">
+                <span>Current: <strong id="currentTool">Hoe</strong></span>
+            </div>
+        </div>
+
+        <!-- Game Info Panel -->
+        <div id="infoPanel">
+            <div class="info-section">
+                <h3>🌱 Farm Status</h3>
+                <div class="farm-stats">
+                    <div class="stat">
+                        <span class="label">Crops Growing:</span>
+                        <span id="cropsGrowing">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Animals:</span>
+                        <span id="animalCount">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Experience:</span>
+                        <span id="experience">0/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Shop Modal -->
+    <div id="shopModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🏪 Farm Shop</h2>
+                <button class="close-btn" data-modal="shopModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="shop-tabs">
+                    <button class="tab-btn active" data-tab="seeds">🌱 Seeds</button>
+                    <button class="tab-btn" data-tab="animals">🐄 Animals</button>
+                    <button class="tab-btn" data-tab="pi-items">🥧 Pi Items</button>
+                </div>
+                
+                <div class="tab-content active" id="seeds-tab">
+                    <div class="shop-items">
+                        <div class="shop-item" data-item="wheat" data-price="10">
+                            <div class="item-icon">🌾</div>
+                            <div class="item-info">
+                                <h4>Wheat Seeds</h4>
+                                <p>Fast growing crop</p>
+                                <span class="price">$10</span>
+                            </div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                        <div class="shop-item" data-item="corn" data-price="15">
+                            <div class="item-icon">🌽</div>
+                            <div class="item-info">
+                                <h4>Corn Seeds</h4>
+                                <p>High value crop</p>
+                                <span class="price">$15</span>
+                            </div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                        <div class="shop-item" data-item="tomato" data-price="20">
+                            <div class="item-icon">🍅</div>
+                            <div class="item-info">
+                                <h4>Tomato Seeds</h4>
+                                <p>Premium crop</p>
+                                <span class="price">$20</span>
+                            </div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="animals-tab">
+                    <div class="shop-items">
+                        <div class="shop-item" data-item="chicken" data-price="50">
+                            <div class="item-icon">🐔</div>
+                            <div class="item-info">
+                                <h4>Chicken</h4>
+                                <p>Produces eggs daily</p>
+                                <span class="price">$50</span>
+                            </div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                        <div class="shop-item" data-item="cow" data-price="200">
+                            <div class="item-icon">🐄</div>
+                            <div class="item-info">
+                                <h4>Cow</h4>
+                                <p>Produces milk daily</p>
+                                <span class="price">$200</span>
+                            </div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="pi-items-tab">
+                    <div class="shop-items">
+                        <div class="shop-item pi-item" data-item="premium-seeds" data-price="1" data-currency="pi">
+                            <div class="item-icon">🌟</div>
+                            <div class="item-info">
+                                <h4>Premium Seed Pack</h4>
+                                <p>Rare seeds with bonus growth</p>
+                                <span class="price">1 π</span>
+                            </div>
+                            <button class="buy-btn pi-buy">Buy with Pi</button>
+                        </div>
+                        <div class="shop-item pi-item" data-item="speed-boost" data-price="2" data-currency="pi">
+                            <div class="item-icon">⚡</div>
+                            <div class="item-info">
+                                <h4>Speed Boost</h4>
+                                <p>2x speed for 1 hour</p>
+                                <span class="price">2 π</span>
+                            </div>
+                            <button class="buy-btn pi-buy">Buy with Pi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Modal -->
+    <div id="inventoryModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎒 Inventory</h2>
+                <button class="close-btn" data-modal="inventoryModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="inventoryGrid" class="inventory-grid">
+                    <!-- Inventory items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls Help -->
+    <div id="controlsHelp" class="help-panel">
+        <h3>🎮 Controls</h3>
+        <div class="controls-list">
+            <div class="control-item">
+                <kbd>W A S D</kbd> <span>Move around</span>
+            </div>
+            <div class="control-item">
+                <kbd>Space</kbd> <span>Pause/Unpause</span>
+            </div>
+            <div class="control-item">
+                <kbd>F5</kbd> <span>Restart game</span>
+            </div>
+            <div class="control-item">
+                <kbd>1-5</kbd> <span>Select tools</span>
+            </div>
+            <div class="control-item">
+                <kbd>Click</kbd> <span>Use tool/Interact</span>
+            </div>
+            <div class="control-item">
+                <kbd>B</kbd> <span>Open shop</span>
+            </div>
+            <div class="control-item">
+                <kbd>I</kbd> <span>Open inventory</span>
+            </div>
+        </div>
+        <button id="closeHelp">Close</button>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notifications"></div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="loading-content">
+            <h1>🌾 Farmology</h1>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p>Loading your farm...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
+
